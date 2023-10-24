@@ -1,0 +1,105 @@
+class complaint:
+  def __init__(self):
+    self.complaint_history ={}
+    self.accnumber = [1234567890,2345678901,3456789012,4567890123,5678901234]
+    self.appnum = [9876543210,8765432109]
+
+  def case_status(self,data):
+    if data in self.complaint_history:
+        print(f"SR Number :{data} \nProduct: Savings \nQuery related to :{self.complaint_history[data][0]} \nType of Query :{self.complaint_history[data][1]} \nStatus :{self.complaint_history[data][2]} \nSR Notes :{self.complaint_history[data][3]} ")
+    else:
+       print("Invalid Docket number it seems like you have not registered a complaint")
+
+  def update(self,data):
+    if data in self.complaint_history:
+      self.srstatus =int(input("Enter the status as 1 for underprocessing\n2 for Unable to process as per KYC/AML regulations \n3 Awaiting Approval \n4 Request Processed"))
+      if self.srstatus ==1:
+          self.status = "Underprocessing"
+          self.srnotes = "Your request is underprocess"
+          self.complaint_history[data][2] = self.status
+          self.complaint_history[data][3] = self.srnotes
+      elif self.srstatus ==2:
+          self.status = "Closed"
+          self.srnotes = "We are unable to process your request as per KYC/AML Regulation. Requesting to visit any near by branch"
+          self.complaint_history[data][2] = self.status
+          self.complaint_history[data][3] = self.srnotes
+      elif self.srstatus ==3:
+          self.status = "Underprocessing"
+          self.srnotes = "Awaiting Approval"
+          self.complaint_history[data][2] = self.status
+          self.complaint_history[data][3] = self.srnotes
+      elif self.srstatus ==4:
+          self.status = "Closed"
+          self.srnotes ="Your Request has been successfully processed"
+          self.complaint_history[data][2] = self.status
+          self.complaint_history[data][3] = self.srnotes
+    else:
+        print("OOPS No Complaint registered with the mentioned Docket number")
+
+  def raise_query(self):
+
+    self.product = "Savings"
+    self.query_related_to = {1:"Account opening",2:"Account closure",3:"Account modification"}
+    self.type_of_query = {1:["1 Account not opened","2 IP cheque not credited"],2:["1 Account closure not done","2 Account closure proceeds not received"],3:["Account details not updated","Account modification not processed"]}
+    print(self.query_related_to)
+    yourQuery = int(input("Enter your query related to"))
+    print(self.type_of_query[yourQuery])
+    subQuery = int(input("Enter your type of query"))
+
+    if (yourQuery == 1 and subQuery ==1) or (yourQuery == 1 and subQuery ==2) or (yourQuery == 2 and subQuery ==1) or (yourQuery == 2 and subQuery ==2) or (yourQuery == 3 and subQuery ==1) or (yourQuery == 3 and subQuery ==2) :
+      AccNum = int(input("Enter your account number or applicaton number"))
+      if AccNum in self.accnumber or self.appnum:
+        self.sr = "SR2023WB00" + str(len(self.complaint_history)+1)
+        self.status = "open"
+        self.complaint_history[self.sr]= list([self.query_related_to[yourQuery],self.type_of_query[yourQuery][subQuery-1],self.status,"Case Initiated"])
+        print(f"\n Your Docket number is {self.sr}")
+      else:
+        print("Enter Valid details")
+
+comp = complaint()
+#of = officer()
+
+from types import prepare_class
+import textwrap
+
+title ="""WELCOME TO WORLD BANK CENTRALIZED GRIEVANCE REDRESSAL SYSTEM"""
+
+Title = title.center(120,'-')
+print(Title)
+
+msg1 = "If you have already lodged the complaints and the status is under progress, please do not lodge the complaint again as the same is already taken up for resolution. Lodging complaint again will hamper the resolution process and will get delayed further.As per Bank’s Policy, other than extra ordinary situation, we will initiate steps for resolving and replying to your complaint within a maximum period of 21 days. Please wait for that."
+
+msg2 = "In case of ATM Cash/POS/ E-com /AEPS transaction related complaints, please wait for 5 days from the date of transaction. Most of the transaction failures will be re-credited within 5 days. If it is not re- credited within 5 days (Transaction Date+5 Days) you may lodge complaints in this portal."
+
+msg3 ="In case of IMPS/UPI/Internet Banking transaction failure related complaints, please wait for 1 day from the date of transaction. Most of the transaction failures will be re-credited within 1 day. If it is not re-credited within 2 days (Transaction Date+1 Day) you may lodge complaints in this portal. However, if you still want to lodge complaint, Click on continue to proceed lodging the complaint, click on exit to exit from the portal."
+
+msg4 ="Please ensure privacy while entering the Personal Indentifiable Information(PII) like Name, Account Number, Mobile Number, ATM Card Number, Credit Card Number, Aadhar Number, PAN Number etc. as leakage of these information may lead to possible misuse."
+print("Dear Customer" ,end = '\n\n')
+print(textwrap.fill(msg1,120),end = '\n\n' )
+print(textwrap.fill(msg2,120),end = '\n\n')
+print(textwrap.fill(msg3,120),end = '\n\n' )
+print(textwrap.fill(msg4,120),end = '\n\n' )
+
+
+select = input("Enter 'Continue' to lodge a complaint or 'Exit' to exit out\n")
+
+if select.lower() == "continue":
+  while True:
+    todo =  int(input("Enter   1 for Tracking your complaint \n\t2 for Raising a Query/Complaint\n\t3 for updating the Query/Complaint\n\t4 for exit\n"))
+    if todo == 1:
+      sr = input("Enter your docket number:\t")
+      comp.case_status(sr.upper())
+    elif todo ==2:
+      comp.raise_query()
+    elif todo ==3:
+      sr = input("Enter docket number:\t")
+      comp.update(sr.upper())
+    elif todo ==4:
+      break
+    else:
+      print("Invalid entry")
+
+elif select.lower() == "exit":
+  print("Thanks for visiting CGRS Happy banking")
+else:
+  print("OOPS!.... Invalid entry")
